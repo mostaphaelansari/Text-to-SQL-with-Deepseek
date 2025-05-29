@@ -1,0 +1,27 @@
+accelerate>=0.25.0
+bitsandbytes>=0.41.1
+peft>=0.7.1
+datasets>=2.18.0
+tokenizers>=0.15.0
+torch>=2.1.0
+gradio>=5.31.0
+gradio_client>=1.10.1
+scipy>=1.15.3
+pandas>=2.2.3
+tqdm>=4.67.1
+
+langchain>=0.3.0
+langchain-ollama>=0.3.3
+ollama>=0.4.9
+langchain-core>=0.3.62
+langchain-text-splitters>=0.3.8
+langsmith>=0.3.42
+
+# CUDA dependencies (optional; install only if using GPU)
+nvidia-cublas-cu11
+nvidia-cuda-runtime-cu11
+nvidia-cudnn-cu11
+
+# For Jupyter notebooks / prototyping (optional)
+jupyter
+
