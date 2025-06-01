@@ -60,9 +60,9 @@ SQL Query:"""
                 self.db_connection = sqlite3.Connection(db_path)
             
             self.schema_info = self._extract_schema()
-            return f"✅ Connected to database: {db_path}\n\nSchema loaded with {len(self.schema_info)} tables"
+            return f"Connected to database: {db_path}\n\nSchema loaded with {len(self.schema_info)} tables"
         except Exception as e:
-            return f"❌ Error connecting to database: {str(e)}\nSQLite module info: {sqlite3}"
+            return f"Error connecting to database: {str(e)}\nSQLite module info: {sqlite3}"
 
     def _extract_schema(self) -> Dict[str, Any]:
         """Extract detailed schema information from the database"""
@@ -129,7 +129,7 @@ SQL Query:"""
     def execute_query(self, sql_query: str) -> Tuple[str, pd.DataFrame]:
         """Execute SQL query and return results"""
         if not self.db_connection:
-            return "❌ No database connected", pd.DataFrame()
+            return "No database connected", pd.DataFrame()
         
         try:
             # Clean the SQL query
@@ -141,12 +141,12 @@ SQL Query:"""
             df = pd.read_sql_query(sql_query, self.db_connection)
             
             if df.empty:
-                return "✅ Query executed successfully but returned no results", df
+                return "Query executed successfully but returned no results", df
             else:
-                return f"✅ Query executed successfully. Found {len(df)} rows", df
+                return f"Query executed successfully. Found {len(df)} rows", df
         
         except Exception as e:
-            return f"❌ SQL Error: {str(e)}", pd.DataFrame()
+            return f"SQL Error: {str(e)}", pd.DataFrame()
 
     def generate_sql(self, question: str, include_context: bool = True) -> str:
         """Generate SQL query from natural language question"""
@@ -293,7 +293,7 @@ SQL Query:"""
         except Exception as e:
             import traceback
             error_details = traceback.format_exc()
-            return f"❌ Error creating sample database: {str(e)}\n\nDetailed error:\n{error_details}\n\nSQLite module: {sqlite3}\nSQLite version: {getattr(sqlite3, 'sqlite_version', 'Unknown')}"
+            return f"Error creating sample database: {str(e)}\n\nDetailed error:\n{error_details}\n\nSQLite module: {sqlite3}\nSQLite version: {getattr(sqlite3, 'sqlite_version', 'Unknown')}"
 
 # Initialize the app
 app = TextToSQLApp()
@@ -351,31 +351,31 @@ def execute_custom_sql(sql_query):
         return result_message, df
 
 # Create Gradio interface
-with gr.Blocks(title="Advanced Text-to-SQL Application", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# 🚀 Advanced Text-to-SQL Application")
+with gr.Blocks(title="Text-to-SQL Application", theme=gr.themes.Soft()) as demo:
+    gr.Markdown("# Text-to-SQL Application")
     gr.Markdown("Convert natural language questions into SQL queries and execute them against your database.")
     
     with gr.Tabs():
         # Main Chat Tab
-        with gr.TabItem("💬 Chat Interface"):
-            gr.Markdown("Ask questions about your data in natural language!")
+        with gr.TabItem("Query Interface"):
+            gr.Markdown("Submit natural language questions to query your database.")
             
             chatbot = gr.ChatInterface(
                 fn=chat_interface,
-                title="Text-to-SQL Chat",
-                description="Type your question about the data...",
+                title="Natural Language to SQL",
+                description="Enter your question about the data",
                 examples=[
-                    "Show me all customers from USA",
+                    "Show all customers from USA",
                     "What are the top 5 best selling products?",
                     "Find customers who have spent more than $500",
-                    "Show me orders placed in the last month",
+                    "Show orders placed in the last month",
                     "Which products are low in stock?"
                 ]
             )
         
         # Database Connection Tab
-        with gr.TabItem("🗄️ Database Connection"):
-            gr.Markdown("### Connect to your SQLite database or create a sample one")
+        with gr.TabItem("Database Connection"):
+            gr.Markdown("### Connect to SQLite database or create sample database")
             
             with gr.Row():
                 with gr.Column():
@@ -399,8 +399,8 @@ with gr.Blocks(title="Advanced Text-to-SQL Application", theme=gr.themes.Soft())
             sample_btn.click(create_sample_db, outputs=[connection_status])
         
         # SQL Executor Tab
-        with gr.TabItem("⚡ SQL Executor"):
-            gr.Markdown("### Execute custom SQL queries directly")
+        with gr.TabItem("SQL Executor"):
+            gr.Markdown("### Execute custom SQL queries")
             
             sql_input = gr.Textbox(
                 label="SQL Query",
@@ -429,38 +429,38 @@ with gr.Blocks(title="Advanced Text-to-SQL Application", theme=gr.themes.Soft())
                 outputs=[execution_result, query_results]
             )
         
-        # Help Tab
-        with gr.TabItem("❓ Help & Examples"):
+        # Documentation Tab
+        with gr.TabItem("Documentation"):
             gr.Markdown("""
-            ### How to Use This Application
+            ### Application Usage
             
-            1. **Connect Database**: Upload your SQLite database file or create a sample database
-            2. **Ask Questions**: Use natural language to query your data
-            3. **Review Results**: See the generated SQL and execution results
+            1. **Database Connection**: Upload your SQLite database file or create a sample database for testing
+            2. **Query Interface**: Submit natural language questions to generate and execute SQL queries
+            3. **SQL Executor**: Execute custom SQL queries directly against the connected database
             
-            ### Example Questions You Can Ask:
+            ### Example Queries
             
-            **Basic Queries:**
-            - "Show me all customers"
-            - "List all products in the Electronics category"
-            - "How many orders do we have?"
+            **Basic Operations:**
+            - "Show all customers"
+            - "List products in Electronics category"
+            - "Count total orders"
             
-            **Advanced Queries:**
-            - "Find the top 10 customers by total spending"
-            - "Show me monthly sales trends"
-            - "Which products have never been ordered?"
-            - "Calculate average order value by country"
+            **Advanced Analysis:**
+            - "Top 10 customers by total spending"
+            - "Monthly sales trends"
+            - "Products with no orders"
+            - "Average order value by country"
             
             **Aggregations:**
-            - "What's the total revenue this year?"
-            - "Show me the best selling product categories"
-            - "Count orders by status"
+            - "Total revenue this year"
+            - "Best selling product categories"
+            - "Order count by status"
             
-            ### Tips for Better Results:
-            - Be specific about what data you want to see
-            - Mention if you want results sorted or limited
-            - Use table and column names if you know them
-            - Ask follow-up questions to refine your queries
+            ### Query Guidelines
+            - Be specific about the data you want to retrieve
+            - Specify sorting or limiting requirements when needed
+            - Reference table and column names when known
+            - Use follow-up questions to refine results
             """)
 
 if __name__ == "__main__":
